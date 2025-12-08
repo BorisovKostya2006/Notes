@@ -1,15 +1,31 @@
+# Built files
+*.apk
+*.aab
+*.ap_
+
+# Kotlin/Java
+*.class
+*.kotlin_module
+
+# Android Studio
 *.iml
 .gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+.idea/
 local.properties
+
+# Build
+build/
+captures/
+.externalNativeBuild
+.cxx/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Keystores - ВАЖНО!
+*.jks
+*.keystore
+
+# Firebase/Google services
+google-services.json
