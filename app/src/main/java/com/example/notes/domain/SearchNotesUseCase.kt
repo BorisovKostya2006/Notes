@@ -2,8 +2,8 @@ package com.example.notes.domain
 
 import kotlinx.coroutines.flow.Flow
 
-class SearchNotesUseCase {
-    operator fun invoke(query : String) : Flow<List<Notes>> {
-        TODO()
+class SearchNotesUseCase(private val repository: NotesRepository) {
+    operator fun invoke(query : String) : Flow<List<Note>> {
+        return repository.searchNotes()
     }
 }

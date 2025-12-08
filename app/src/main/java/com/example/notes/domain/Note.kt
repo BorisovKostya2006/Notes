@@ -1,6 +1,6 @@
 package com.example.notes.domain
 
-data class Notes(
+data class Note(
     val id : Int,
     val content : String,
     val updatedAt : Long,

@@ -1,7 +1,7 @@
 package com.example.notes.domain
 
-class AddNoteUseCase {
-    operator fun invoke(note : Notes){
-        TODO()
+class AddNoteUseCase(private val repository: NotesRepository) {
+    operator fun invoke(note : Note){
+        repository.addNote(note)
     }
 }
