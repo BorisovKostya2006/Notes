@@ -8,6 +8,6 @@ interface NotesRepository {
     fun editNote(note : Note)
     fun getAllNotes() : Flow<List<Note>>
     fun getNote(noteId : Int) : Note
-    fun searchNotes() : Flow<List<Note>>
+    fun searchNotes(query : String) : Flow<List<Note>>
     fun switchPinnedStatus(noteId : Int)
 }
