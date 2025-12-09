@@ -1,7 +1,5 @@
 package com.example.notes.presentation.screens
 
-import android.R.attr.query
-import android.provider.ContactsContract
 import androidx.lifecycle.ViewModel
 import com.example.notes.data.TestNotesRepositoryImpl
 import com.example.notes.domain.GetAllNotesUseCase
@@ -12,10 +10,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 
@@ -30,16 +26,20 @@ class NotesViewModel : ViewModel(){
     val getAllNotesUseCase = GetAllNotesUseCase(repository)
     init {
         query
-            .flatMapLatest {
-                if (it.isBlank()) {
+            .onEach { input ->
+                _state.update { it.copy(query= input) }
+
+            }
+            .flatMapLatest {input ->
+                if (input.isBlank()) {
                     getAllNotesUseCase()
                 } else {
-                    searchNotesUseCase(it)
+                    searchNotesUseCase(input)
                 }
             }
-                    .onEach{
-                        val pinnedNotes: List<Note> = it.filter{it.isPinned }
-                        val otherNotes : List<Note> = it.filter{!it.isPinned }
+                    .onEach{notes ->
+                        val pinnedNotes: List<Note> = notes.filter{it.isPinned }
+                        val otherNotes : List<Note> = notes.filter{!it.isPinned }
                         _state.update{it.copy(pinnedNotes = pinnedNotes, otherNotes = otherNotes) }
                     }
             .launchIn(scope)
@@ -51,19 +51,21 @@ class NotesViewModel : ViewModel(){
     fun proccesCommand(command: NotesCommand){
         when(command) {
             is NotesCommand.PinnedNotes -> switchPinnedStatusUseCase(noteId = command.noteId)
-            is NotesCommand.SearchNotes -> TODO()
+            is NotesCommand.SearchNotes -> query.update {
+                command.query.trim()
+            }
         }
     }
 }
 
 sealed interface NotesCommand{
-    data class SearchNotes(val searchNotes : String) : NotesCommand
+
+    data class SearchNotes(val query: String) : NotesCommand
     data class PinnedNotes( val noteId : Int) : NotesCommand
 }
 
 data class  NotesScreenState(
-    val searchNotes : String = "",
-    val notes : List<Note> = listOf(),
+    val query : String = "",
     val pinnedNotes : List<Note> = listOf(),
     val otherNotes : List<Note> = listOf(),
 )
