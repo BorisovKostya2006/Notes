@@ -24,6 +24,8 @@ class NotesViewModel : ViewModel(){
     val searchNotesUseCase = SearchNotesUseCase(repository)
     val switchPinnedStatusUseCase = SwitchPinnedStatusUseCase(repository)
     val getAllNotesUseCase = GetAllNotesUseCase(repository)
+
+
     init {
         query
             .onEach { input ->
@@ -48,7 +50,7 @@ class NotesViewModel : ViewModel(){
 
 
 
-    fun proccesCommand(command: NotesCommand){
+    fun processCommand(command: NotesCommand){
         when(command) {
             is NotesCommand.PinnedNotes -> switchPinnedStatusUseCase(noteId = command.noteId)
             is NotesCommand.SearchNotes -> query.update {
@@ -56,6 +58,8 @@ class NotesViewModel : ViewModel(){
             }
         }
     }
+
+
 }
 
 sealed interface NotesCommand{
