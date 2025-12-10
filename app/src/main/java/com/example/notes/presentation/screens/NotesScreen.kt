@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -27,14 +28,19 @@ fun NotesScreen(
     Row(
         modifier= Modifier.fillMaxWidth()
             .horizontalScroll(rememberScrollState())
+            .padding(top = 42.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+
     ) {
         state.pinnedNotes.forEach {
-            Text(text = "title${it.id} content${it.id}")
+            Text(text = "title${it.id} content${it.id}",
+                fontSize = 32.sp,
+                )
         }
     }
     Column(
         modifier = Modifier
-            .padding(top = 48.dp)
+            .padding(top = 80.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(10.dp)
 
@@ -44,7 +50,8 @@ fun NotesScreen(
                 , fontSize = 32.sp,
                 modifier = Modifier.clickable{
                     viewModel.processCommand(NotesCommand.PinnedNotes(it.id))
-                })
+                }
+            )
         }
     }
 }

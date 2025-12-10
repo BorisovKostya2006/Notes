@@ -2,6 +2,7 @@ package com.example.notes.presentation.screens
 
 import androidx.lifecycle.ViewModel
 import com.example.notes.data.TestNotesRepositoryImpl
+import com.example.notes.domain.AddNoteUseCase
 import com.example.notes.domain.GetAllNotesUseCase
 import com.example.notes.domain.Note
 import com.example.notes.domain.SearchNotesUseCase
@@ -24,9 +25,11 @@ class NotesViewModel : ViewModel(){
     val searchNotesUseCase = SearchNotesUseCase(repository)
     val switchPinnedStatusUseCase = SwitchPinnedStatusUseCase(repository)
     val getAllNotesUseCase = GetAllNotesUseCase(repository)
+    val addNoteUseCase = AddNoteUseCase(repository)
 
 
     init {
+        addSomeNotes()
         query
             .onEach { input ->
                 _state.update { it.copy(query= input) }
@@ -56,6 +59,12 @@ class NotesViewModel : ViewModel(){
             is NotesCommand.SearchNotes -> query.update {
                 command.query.trim()
             }
+        }
+    }
+    //TODO for test
+    private fun addSomeNotes(){
+        repeat(50){
+        addNoteUseCase(title = "title$it", content = "content$it" )
         }
     }
 
