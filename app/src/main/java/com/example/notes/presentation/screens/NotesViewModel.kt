@@ -3,6 +3,8 @@ package com.example.notes.presentation.screens
 import androidx.lifecycle.ViewModel
 import com.example.notes.data.TestNotesRepositoryImpl
 import com.example.notes.domain.AddNoteUseCase
+import com.example.notes.domain.DeleteNoteUseCase
+import com.example.notes.domain.EditNoteUseCase
 import com.example.notes.domain.GetAllNotesUseCase
 import com.example.notes.domain.Note
 import com.example.notes.domain.SearchNotesUseCase
@@ -27,6 +29,8 @@ class NotesViewModel : ViewModel(){
     val getAllNotesUseCase = GetAllNotesUseCase(repository)
     val addNoteUseCase = AddNoteUseCase(repository)
 
+    val editNoteUseCase = EditNoteUseCase(repository)
+    val deleteNoteUseCase = DeleteNoteUseCase(repository)
 
     init {
         addSomeNotes()
@@ -55,15 +59,17 @@ class NotesViewModel : ViewModel(){
 
     fun processCommand(command: NotesCommand){
         when(command) {
+            is NotesCommand.DeleteNote -> deleteNoteUseCase(command.noteId)
+            is NotesCommand.EditedNote -> editNoteUseCase(command.note)
             is NotesCommand.PinnedNotes -> switchPinnedStatusUseCase(noteId = command.noteId)
-            is NotesCommand.SearchNotes -> query.update {
+            is NotesCommand.InputSearchNotes -> query.update {
                 command.query.trim()
             }
         }
     }
     //TODO for test
     private fun addSomeNotes(){
-        repeat(50_000){
+        repeat(10_000){
         addNoteUseCase(title = "title$it", content = "content$it" )
         }
     }
@@ -72,8 +78,9 @@ class NotesViewModel : ViewModel(){
 }
 
 sealed interface NotesCommand{
-
-    data class SearchNotes(val query: String) : NotesCommand
+    data class EditedNote(val note : Note) : NotesCommand
+    data class DeleteNote(val noteId : Int) : NotesCommand
+    data class InputSearchNotes(val query: String) : NotesCommand
     data class PinnedNotes( val noteId : Int) : NotesCommand
 }
 
