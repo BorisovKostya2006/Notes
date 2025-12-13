@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.update
 object TestNotesRepositoryImpl : NotesRepository {
     private val notesListFlow = MutableStateFlow<List<Note>>(emptyList())
 
-    override fun addNote(title: String, content: String) {
+    override suspend fun addNote(title: String, content: String) {
         notesListFlow.update {oldList->
             val note = Note(id = oldList.size,
                 content = content,
@@ -21,14 +21,14 @@ object TestNotesRepositoryImpl : NotesRepository {
         }
     }
 
-    override fun deleteNote(noteId: Int) {
+    override suspend fun deleteNote(noteId: Int) {
         notesListFlow.update { currentList ->
             currentList.filterNot {
                 it.id == noteId }
         }
     }
 
-    override fun editNote(updatedNote: Note) {
+    override suspend fun editNote(updatedNote: Note) {
         notesListFlow.update { currentList ->
             currentList.map { note ->
                 if (note.id == updatedNote.id) updatedNote else note
@@ -38,7 +38,7 @@ object TestNotesRepositoryImpl : NotesRepository {
 
     override fun getAllNotes(): Flow<List<Note>> = notesListFlow
 
-    override fun getNote(noteId: Int): Note {
+    override suspend fun getNote(noteId: Int): Note {
         return notesListFlow.value.first { it.id == noteId }
     }
 
@@ -51,7 +51,7 @@ object TestNotesRepositoryImpl : NotesRepository {
         }
     }
 
-    override fun switchPinnedStatus(noteId: Int) {
+    override suspend fun switchPinnedStatus(noteId: Int) {
         notesListFlow.update { currentList ->
             currentList.map { note ->
                 if (note.id == noteId) {

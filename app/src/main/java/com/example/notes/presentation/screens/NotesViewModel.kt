@@ -1,6 +1,7 @@
 package com.example.notes.presentation.screens
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.notes.data.TestNotesRepositoryImpl
 import com.example.notes.domain.AddNoteUseCase
 import com.example.notes.domain.DeleteNoteUseCase
@@ -17,11 +18,11 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class NotesViewModel : ViewModel(){
     private val _state = MutableStateFlow(NotesScreenState())
     val state  = _state.asStateFlow()
-    private val scope: CoroutineScope = CoroutineScope (Dispatchers.IO)
     private val query = MutableStateFlow("")
     val repository = TestNotesRepositoryImpl
     val searchNotesUseCase = SearchNotesUseCase(repository)
@@ -51,27 +52,33 @@ class NotesViewModel : ViewModel(){
                         val otherNotes : List<Note> = notes.filter{!it.isPinned }
                         _state.update{it.copy(pinnedNotes = pinnedNotes, otherNotes = otherNotes) }
                     }
-            .launchIn(scope)
+            .launchIn(viewModelScope)
                     }
 
 
 
 
     fun processCommand(command: NotesCommand){
-        when(command) {
-            is NotesCommand.DeleteNote -> deleteNoteUseCase(command.noteId)
-            is NotesCommand.EditedNote -> editNoteUseCase(command.note)
-            is NotesCommand.PinnedNotes -> switchPinnedStatusUseCase(noteId = command.noteId)
-            is NotesCommand.InputSearchNotes -> query.update {
-                command.query.trim()
+        viewModelScope.launch {
+            when(command) {
+                is NotesCommand.DeleteNote -> deleteNoteUseCase(command.noteId)
+                is NotesCommand.EditedNote -> editNoteUseCase(command.note)
+                is NotesCommand.PinnedNotes -> switchPinnedStatusUseCase(noteId = command.noteId)
+                is NotesCommand.InputSearchNotes -> query.update {
+                    command.query.trim()
+                }
             }
         }
+
     }
     //TODO for test
     private fun addSomeNotes(){
-        repeat(10_000){
-        addNoteUseCase(title = "title$it", content = "content$it" )
+        viewModelScope.launch {
+            repeat(10_000){
+                addNoteUseCase(title = "title$it", content = "content$it" )
+            }
         }
+
     }
 
 
