@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -32,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,6 +43,7 @@ import com.example.notes.presentation.ui.theme.OtherNotesColors
 import com.example.notes.presentation.ui.theme.PinnedNotesColors
 import com.example.notes.presentation.ui.theme.Yellow100
 import com.example.notes.presentation.ui.theme.Yellow200
+import com.example.notes.presentation.utils.DateFormatter
 
 @Composable
 fun NotesScreen(
@@ -92,6 +95,7 @@ fun NotesScreen(
                 }){ index ,note ->
                     NoteCard(
                         note = note,
+                        modifier = Modifier.widthIn(max = 160.dp),
                         onNoteClick = { viewModel.processCommand(NotesCommand.PinnedNotes(it.id)) },
                         onLongNoteClick = { viewModel.processCommand(NotesCommand.EditedNote(it)) },
                         onDoubleNoteClick = {
@@ -224,21 +228,26 @@ fun NoteCard(
                 onLongClick = { onLongNoteClick(note) },
                 onDoubleClick = { onDoubleNoteClick(note) }
             )
+            .padding(16.dp)
     ) {
         Text(
             text = note.title, fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            note.updatedAt.toString(), fontSize = 12.sp,
+            DateFormatter.formatDateToString(note.updatedAt), fontSize = 12.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             note.content, fontSize = 16.sp,
             color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.Medium,
+            maxLines = 3,
+            overflow = TextOverflow.Ellipsis
         )
     }
 
