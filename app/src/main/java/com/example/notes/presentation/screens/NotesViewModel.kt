@@ -28,13 +28,9 @@ class NotesViewModel : ViewModel(){
     val searchNotesUseCase = SearchNotesUseCase(repository)
     val switchPinnedStatusUseCase = SwitchPinnedStatusUseCase(repository)
     val getAllNotesUseCase = GetAllNotesUseCase(repository)
-    val addNoteUseCase = AddNoteUseCase(repository)
 
-    val editNoteUseCase = EditNoteUseCase(repository)
-    val deleteNoteUseCase = DeleteNoteUseCase(repository)
 
     init {
-        addSomeNotes()
         query
             .onEach { input ->
                 _state.update { it.copy(query= input) }
@@ -61,8 +57,6 @@ class NotesViewModel : ViewModel(){
     fun processCommand(command: NotesCommand){
         viewModelScope.launch {
             when(command) {
-                is NotesCommand.DeleteNote -> deleteNoteUseCase(command.noteId)
-                is NotesCommand.EditedNote -> editNoteUseCase(command.note)
                 is NotesCommand.PinnedNotes -> switchPinnedStatusUseCase(noteId = command.noteId)
                 is NotesCommand.InputSearchNotes -> query.update {
                     command.query.trim()
@@ -71,22 +65,12 @@ class NotesViewModel : ViewModel(){
         }
 
     }
-    //TODO for test
-    private fun addSomeNotes(){
-        viewModelScope.launch {
-            repeat(10_000){
-                addNoteUseCase(title = "title$it titletitletitletitletitletitletitletitle", content = "content$it contentcontentcontentcontentcontentcontent" )
-            }
-        }
 
-    }
 
 
 }
 
 sealed interface NotesCommand{
-    data class EditedNote(val note : Note) : NotesCommand
-    data class DeleteNote(val noteId : Int) : NotesCommand
     data class InputSearchNotes(val query: String) : NotesCommand
     data class PinnedNotes( val noteId : Int) : NotesCommand
 }
