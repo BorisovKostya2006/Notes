@@ -1,17 +1,12 @@
-package com.example.notes.presentation.screens
+package com.example.notes.presentation.screens.notes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notes.data.TestNotesRepositoryImpl
-import com.example.notes.domain.AddNoteUseCase
-import com.example.notes.domain.DeleteNoteUseCase
-import com.example.notes.domain.EditNoteUseCase
 import com.example.notes.domain.GetAllNotesUseCase
 import com.example.notes.domain.Note
 import com.example.notes.domain.SearchNotesUseCase
 import com.example.notes.domain.SwitchPinnedStatusUseCase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
