@@ -1,5 +1,6 @@
 package com.example.notes.data
 
+import android.util.Log
 import com.example.notes.domain.Note
 import com.example.notes.domain.NotesRepository
 import kotlinx.coroutines.flow.Flow
@@ -8,7 +9,20 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
 object TestNotesRepositoryImpl : NotesRepository {
-    private val notesListFlow = MutableStateFlow<List<Note>>(emptyList())
+
+    val testNotes = mutableListOf<Note>().apply {
+        repeat(10){
+            add(Note(
+                it,
+                content = "content $it",
+                updatedAt = System.currentTimeMillis(),
+                isPinned = false,
+                title = "title $it",
+            ))
+        }
+
+    }
+    private val notesListFlow = MutableStateFlow<List<Note>>(testNotes)
 
     override suspend fun addNote(title: String, content: String) {
         notesListFlow.update {oldList->
@@ -39,6 +53,7 @@ object TestNotesRepositoryImpl : NotesRepository {
     override fun getAllNotes(): Flow<List<Note>> = notesListFlow
 
     override suspend fun getNote(noteId: Int): Note {
+        Log.d("empty screen", "getNote")
         return notesListFlow.value.first { it.id == noteId }
     }
 
