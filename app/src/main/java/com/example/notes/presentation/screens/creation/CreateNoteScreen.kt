@@ -1,6 +1,7 @@
 package com.example.notes.presentation.screens.creation
 
 import android.R
+import android.content.IntentSender
 import android.graphics.drawable.Icon
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.collectAsState
@@ -38,7 +40,8 @@ import com.example.notes.presentation.utils.DateFormatter.formateCurrentDate
 @Composable
 fun CreateNoteScreen(
     modifier: Modifier = Modifier,
-    viewModel: CreateNoteViewModel = viewModel()
+    viewModel: CreateNoteViewModel = viewModel(),
+    onFinished: () -> Unit
 ){
     val state = viewModel.state.collectAsState()
     val currentState = state.value
@@ -166,8 +169,9 @@ fun CreateNoteScreen(
 
         }
         CreateNoteState.Finished -> {
-
-
+            LaunchedEffect(key1= Unit) {
+            onFinished()
+        }
         }
     }
 }
