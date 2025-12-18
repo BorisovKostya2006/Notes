@@ -1,5 +1,6 @@
 package com.example.notes.presentation.navigation
 
+import android.os.Bundle
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
@@ -19,18 +20,19 @@ fun NavGraph (){
         composable(Screen.Notes.route) {
             NotesScreen(
                 onNoteClick = {
-                    Log.d("MainActivity","onNoteClick")
-                    navController.navigate(Screen.EditNote.route)
+                    Log.d("MainActivity", "onNoteClick")
+                    navController.navigate(Screen.EditNote.createRoute(it.id))
                 },
                 onAddNoteClick = {
-                    Log.d("MainActivity","onAddNoteClick")
+                    Log.d("MainActivity", "onAddNoteClick")
                     navController.navigate(Screen.CreateNote.route)
                 }
             )
         }
         composable(Screen.EditNote.route) {
+            val noteId = Screen.EditNote.getNoteId(it.arguments)
             EditNoteScreen(
-                noteId = 5,
+                noteId = noteId,
                 onFinished = {
                     Log.d("MainActivity","onFinished")
                     navController.popBackStack()
@@ -54,7 +56,16 @@ fun NavGraph (){
 
 sealed class Screen(val route : String){
     data object Notes : Screen(route = "notes")
-    data object EditNote : Screen(route = "EditNote")
+    data object EditNote : Screen(route = "edit_note/{note_id}") {
+        fun createRoute(noteId : Int) : String{
+            return "edit_note/${noteId}"
+        }
+
+        fun getNoteId(arguments : Bundle?) : Int{
+            val noteId = arguments?.getString("note_id")?.toInt() ?: 0
+            return noteId
+        }
+    }
     data object CreateNote : Screen(route = "CreateNote")
 
 

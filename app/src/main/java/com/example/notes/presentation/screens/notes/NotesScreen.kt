@@ -119,6 +119,9 @@ fun NotesScreen(
                             modifier = Modifier.widthIn(max = 160.dp),
                             onNoteClick = onNoteClick,
                             background = PinnedNotesColors[index % PinnedNotesColors.size],
+                            onDoubleNoteClick = {
+                                viewModel.processCommand(command = NotesCommand.PinnedNotes(it.id))
+                            },
                         )
                     }
                 }
@@ -142,8 +145,11 @@ fun NotesScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     note = note,
-                    onNoteClick = { viewModel.processCommand(NotesCommand.PinnedNotes(it.id)) },
+                    onNoteClick =  onNoteClick,
                     background = OtherNotesColors[index % OtherNotesColors.size],
+                    onDoubleNoteClick = {
+                        viewModel.processCommand(command = NotesCommand.PinnedNotes(it.id))
+                    },
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -230,6 +236,7 @@ fun Title(
 fun NoteCard(
     modifier: Modifier = Modifier,
     onNoteClick: (Note) -> Unit,
+    onDoubleNoteClick: (Note) -> Unit,
     note: Note,
     background: Color
 ) {
@@ -239,6 +246,7 @@ fun NoteCard(
             .background(background)
             .combinedClickable(
                 onClick = { onNoteClick(note) },
+                onDoubleClick = { onDoubleNoteClick(note) }
             )
             .padding(16.dp)
     ) {

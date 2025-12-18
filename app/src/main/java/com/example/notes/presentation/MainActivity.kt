@@ -17,7 +17,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NotesTheme {
-                Log.d("empty screen", "MainActivity")
                 NavGraph()
             }
 
