@@ -1,16 +1,17 @@
 package com.example.notes.presentation.screens.creation
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.notes.data.TestNotesRepositoryImpl
+import com.example.notes.data.NotesRepositoryImpl
 import com.example.notes.domain.AddNoteUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class CreateNoteViewModel() : ViewModel(){
-    val repository = TestNotesRepositoryImpl
+class CreateNoteViewModel(context: Context) : ViewModel(){
+    val repository = NotesRepositoryImpl.getInstance(context)
     val addNoteUseCase = AddNoteUseCase(repository)
     val _state = MutableStateFlow<CreateNoteState>(CreateNoteState.Creation())
     val state = _state.asStateFlow()
@@ -50,7 +51,12 @@ class CreateNoteViewModel() : ViewModel(){
                         if(previousState is CreateNoteState.Creation){
                             val title = previousState.title
                             val content = previousState.content
-                            addNoteUseCase(title = title, content = content)
+                            addNoteUseCase(
+                                title = title, content = content,
+                                isPinned = false,
+                                updatedAt = System.currentTimeMillis(),
+                                id = 0
+                            )
                             CreateNoteState.Finished
                         }
                         else{

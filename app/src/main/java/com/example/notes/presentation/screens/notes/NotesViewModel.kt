@@ -1,8 +1,9 @@
 package com.example.notes.presentation.screens.notes
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.notes.data.TestNotesRepositoryImpl
+import com.example.notes.data.NotesRepositoryImpl
 import com.example.notes.domain.GetAllNotesUseCase
 import com.example.notes.domain.Note
 import com.example.notes.domain.SearchNotesUseCase
@@ -15,11 +16,11 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class NotesViewModel : ViewModel(){
+class NotesViewModel(context: Context) : ViewModel(){
     private val _state = MutableStateFlow(NotesScreenState())
     val state  = _state.asStateFlow()
     private val query = MutableStateFlow("")
-    val repository = TestNotesRepositoryImpl
+    val repository = NotesRepositoryImpl.getInstance(context)
     val searchNotesUseCase = SearchNotesUseCase(repository)
     val switchPinnedStatusUseCase = SwitchPinnedStatusUseCase(repository)
     val getAllNotesUseCase = GetAllNotesUseCase(repository)
