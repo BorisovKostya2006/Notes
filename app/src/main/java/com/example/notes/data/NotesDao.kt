@@ -23,5 +23,7 @@ interface NotesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNote(note : NoteDbModel)
 
+    @Query("SELECT * FROM notes WHERE id == :id")
+    suspend fun getNote(id : Int) : NoteDbModel
 
 }
