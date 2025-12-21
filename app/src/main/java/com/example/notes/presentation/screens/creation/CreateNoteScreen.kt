@@ -35,6 +35,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.notes.presentation.screens.notes.NotesViewModel
 import com.example.notes.presentation.utils.DateFormatter.formateCurrentDate
 
 
@@ -42,10 +44,7 @@ import com.example.notes.presentation.utils.DateFormatter.formateCurrentDate
 @Composable
 fun CreateNoteScreen(
     modifier: Modifier = Modifier,
-    context : Context = LocalContext.current.applicationContext,
-    viewModel: CreateNoteViewModel = viewModel{
-        CreateNoteViewModel(context)
-    },
+    viewModel: CreateNoteViewModel = hiltViewModel(),
     onFinished: () -> Unit
 ){
     val state = viewModel.state.collectAsState()

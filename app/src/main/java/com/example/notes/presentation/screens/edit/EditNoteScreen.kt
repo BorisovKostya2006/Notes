@@ -36,9 +36,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.notes.presentation.screens.creation.CreateNoteCommand
 import com.example.notes.presentation.screens.creation.CreateNoteState
 import com.example.notes.presentation.screens.creation.CreateNoteViewModel
+import com.example.notes.presentation.screens.notes.NotesViewModel
 import com.example.notes.presentation.utils.DateFormatter.formateCurrentDate
 
 
@@ -47,10 +49,12 @@ import com.example.notes.presentation.utils.DateFormatter.formateCurrentDate
 fun EditNoteScreen(
     modifier: Modifier = Modifier,
     noteId: Int,
-    context : Context = LocalContext.current.applicationContext,
-    viewModel: EditNoteViewModel = viewModel {
-        EditNoteViewModel(noteId = noteId, context = context)
-    },
+    viewModel: EditNoteViewModel = hiltViewModel(
+        creationCallback = {factory : EditNoteViewModel.Factory ->
+            factory.create(noteId)
+
+        }
+    ),
     onFinished: () -> Unit
 ) {
     val state = viewModel.state.collectAsState()
@@ -79,10 +83,10 @@ fun EditNoteScreen(
                                 modifier = Modifier
                                     .padding( end = 16.dp)
                                     .clickable {
-                                        viewModel.processCommand(EditNoteCommand.Back)
+                                        viewModel.processCommand(EditNoteCommand.Delete)
                                     },
                                 imageVector = Icons.Outlined.Delete,
-                                contentDescription = "Back"
+                                contentDescription = "delete"
                             )
                         },
                         navigationIcon = {
